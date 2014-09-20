@@ -29,6 +29,7 @@ class PhotosCollectionViewController: UICollectionViewController, PHPhotoLibrary
   override func viewDidLoad() {
     super.viewDidLoad()
     images = PHAsset.fetchAssetsWithMediaType(.Image, options: nil)
+    
     imageCacheController = ImageCacheController(imageManager: imageManager, images: images, preheatSize: 1)
     PHPhotoLibrary.sharedPhotoLibrary().registerChangeObserver(self)
   }
@@ -64,10 +65,13 @@ class PhotosCollectionViewController: UICollectionViewController, PHPhotoLibrary
     let changeDetails = changeInstance.changeDetailsForFetchResult(images)
     
     self.images = changeDetails.fetchResultAfterChanges
+    
     dispatch_async(dispatch_get_main_queue()) {
-      // Loop through the visible cell indices
+        
+    // Loop through the visible cell indices
       let indexPaths = self.collectionView?.indexPathsForVisibleItems()
-      for indexPath in indexPaths as [NSIndexPath] {
+      
+        for indexPath in indexPaths as [NSIndexPath] {
         if changeDetails.changedIndexes.containsIndex(indexPath.item) {
           let cell = self.collectionView?.cellForItemAtIndexPath(indexPath) as PhotosCollectionViewCell
           cell.imageAsset = changeDetails.fetchResultAfterChanges[indexPath.item] as? PHAsset
